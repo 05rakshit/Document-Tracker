@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <div>
+    <h3 class="mb-0">{{ client.name }}</h3>
+    <small class="text-muted">{{ client.client_type }}</small>
+  </div>
+  <div>
+    <a class="btn btn-sm btn-outline-secondary me-2" href="{{ url_for('client_pending', client_id=client.id) }}">Show Pending</a>
+    <a class="btn btn-sm btn-outline-primary" href="{{ url_for('index') }}">Back to Clients</a>
+  </div>
+</div>
+
+<form method="post" class="mb-4">
+  <div class="table-responsive">
+    <table class="table table-striped align-middle">
+      <thead>
+        <tr>
+          <th>Document</th>
+          <th class="text-center" style="width:140px">Received</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% if docs|length == 0 %}
+          <tr>
+            <td colspan="2">No documents attached to this client.</td>
+          </tr>
+        {% else %}
+          {% for cd in docs %}
+          <tr>
+            <td>{{ cd.document.name }}</td>
+            <td class="text-center">
+              <input type="checkbox" name="received-{{ cd.id }}" {% if cd.received %}checked{% endif %}>
+            </td>
+          </tr>
+          {% endfor %}
+        {% endif %}
+      </tbody>
+    </table>
+  </div>
+
+  <div class="d-flex gap-2">
+    <button class="btn btn-success">Save Changes</button>
+    <a class="btn btn-outline-secondary" href="{{ url_for('index') }}">Cancel</a>
+  </div>
+</form>
+
+<hr>
+
+<h5 class="mt-4">Add a custom document for this client (and future clients of same type)</h5>
+<form method="post" action="{{ url_for('edit_documents', client_id=client.id) }}" class="mt-2">
+  <div class="input-group">
+    <input class="form-control" name="new_doc" placeholder="New document name" required>
+    <button class="btn btn-outline-primary">Add Document</button>
+  </div>
+  <div class="form-text mt-2">This will add the document to the master list for <strong>{{ client.client_type }}</strong> and attach it to this client.</div>
+</form>
+
+{% endblock %}

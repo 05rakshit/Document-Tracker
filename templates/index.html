@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+{% block content %}
+<h3>Clients</h3>
+{% if clients|length == 0 %}
+<p>No clients yet. <a href="{{ url_for('add_client') }}">Add one</a>.</p>
+{% else %}
+<div class="list-group">
+{% for c in clients %}
+<div class="list-group-item d-flex justify-content-between align-items-center">
+<div>
+<strong>{{ c.name }}</strong> <span class="text-muted">— {{ c.client_type }}</span>
+</div>
+<div>
+<a class="btn btn-sm btn-outline-primary me-2" href="{{ url_for('client_detail', client_id=c.id) }}">Open</a>
+<a class="btn btn-sm btn-outline-secondary me-2" href="{{ url_for('client_pending', client_id=c.id) }}">Pending</a>
+<form action="{{ url_for('delete_client', client_id=c.id) }}" method="post" style="display:inline;" onsubmit="return confirm('Delete client?')">
+<button class="btn btn-sm btn-danger">Delete</button>
+</form>
+</div>
+</div>
+{% endfor %}
+</div>
+{% endif %}
+{% endblock %}
