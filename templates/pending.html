@@ -1,31 +1,29 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div class="container mt-4">
-    <h2>Pending Documents for {{ client.name }}</h2>
-    <p class="text-muted">Client Type: {{ client.client_type }}</p>
+    <div class="container mt-4">
+        <h2>Pending Documents for {{ client.name }}</h2>
+        <p class="text-muted">Client Type: {{ client.client_type }}</p>
 
-    {% if pending %}
-        <table class="table table-bordered table-striped">
-            <thead>
-                <tr>
-                    <th>Document</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for cd in pending %}
-                <tr>
-                    <td>{{ cd.document.name }}</td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    {% else %}
-        <div class="alert alert-success">
-            All documents have been received.
-        </div>
-    {% endif %}
+        {% if pending %}
+            <table class="table table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>Document</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for cd in pending %}
+                    <tr>
+                        <td>{{ cd.document.name if cd.document else cd.name}}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <div class="alert alert-success">All documents have been received.</div>
+        {% endif %}
 
-    <a href="{{ url_for('client_detail', client_id=client.id) }}" class="btn btn-secondary">Back</a>
-</div>
+        <a href="{{ url_for('client_detail', client_id=client.id) }}" class="btn btn-secondary">Back</a>
+    </div>
 {% endblock %}

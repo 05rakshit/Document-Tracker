@@ -117,3 +117,10 @@ form[style*="display:inline;"] button {
   box-shadow: 0 0 0 0.15rem rgba(13,110,253,0.15);
   outline: none;
 }
+
+
+.remove-col{
+  width: 120px;
+  text-align: center;
+}
+
