@@ -183,7 +183,8 @@ def dashboard():
         })
     return(render_template('dashboard.html', number_of_clients=total_clients, 
                     total_number_of_documents=total_documents, number_of_pending_documents=pending_docs,summary=summary))
-                           
+
+
 
 def setup_db():
     db.create_all()
@@ -198,6 +199,8 @@ def setup_db():
 
 with app.app_context():
     setup_db()
+
+
 
 if __name__=="__main__":
     app.run(debug=True)
