@@ -37,9 +37,9 @@ DEFAULT_TYPES = ['Proprietorship','Partnership','LLP','Pvt Ltd','Salaried']
 
 DEFAULT_DOCS = {
     'Proprietorship': [
-        'Aadhaar', 'PAN', 'GST Certificate', 'Udyam',
-        'Bank Statement (12 months)', 'ITR (2 years)', 'Ownership Proof', 'GST 3B',
-        'House Address Proof', 'Office Address Proof'
+        'Applicant Aadhaar', 'Applicant PAN', 'Applicant Photo', 'Co-Applicant Aadhaar', 'Co-Applicant PAN', 'Co-Applicant Photo', 
+        'GST Certificate', 'Udyam', 'House Address Proof', 'Office Address Proof', 'Ownership Proof', 'Bank Statement (12 months)',
+        'ITR (2 years)','Balance Sheet (2 years)','P&L and Trading Account (2 years)', 'GST 3B (12 months)'
     ],
     'Partnership': [
         'Partnership Deed', "PAN of Firm", 'GST Certificate', 'Address Proof of Firm',
@@ -63,8 +63,13 @@ DEFAULT_DOCS = {
 
 @app.route('/')
 def index():
-    clients = Client.query.order_by(Client.name).all()
-    return render_template('index.html', clients=clients)
+    Search = request.args.get('query','')
+    if Search:
+        clients = Client.query.filter(Client.name.ilike(f"%{Search}%")).all()
+        
+    else:
+        clients = Client.query.all()    
+    return render_template('index.html', clients=clients, query=Search)
 
 
 #add client from first page
@@ -160,10 +165,26 @@ def client_pending(client_id):
     pending = [cd for cd in client.documents if not cd.received]
     return render_template('pending.html', client=client, pending=pending)
 
+@app.route("/dashboard")
+def dashboard():
+    total_clients=Client.query.count()
+    total_documents=ClientDocument.query.count()
+    pending_docs=ClientDocument.query.filter_by(received=False).count()
+    Clients=Client.query.all()
+    summary = []
+    for client in Clients:
+        list_of_pending_docs=[cd for cd in client.documents if cd.received == False]
+        number_of_pending_docs=len(list_of_pending_docs)
+        total=len(client.documents)
+        summary.append({
+            "name":client.name,
+            "total":total,
+            "pending":number_of_pending_docs
+        })
+    return(render_template('dashboard.html', number_of_clients=total_clients, 
+                    total_number_of_documents=total_documents, number_of_pending_documents=pending_docs,summary=summary))
+                           
 
-
-
-@app.before_first_request
 def setup_db():
     db.create_all()
     # Seed master documents
@@ -174,6 +195,9 @@ def setup_db():
                 d = Document(client_type=t, name=doc_name)
                 db.session.add(d)
     db.session.commit()
+
+with app.app_context():
+    setup_db()
 
 if __name__=="__main__":
     app.run(debug=True)

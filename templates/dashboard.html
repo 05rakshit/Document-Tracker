@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% block content %}
+    <h1>Dashboard</h1>
+    <p><strong>Total Number of Client: </strong>{{ number_of_clients }}</p>
+    <p><strong>Total Number of Documents: </strong>{{ total_number_of_documents }}</p>
+    <p><strong>Total Number of Pending Documents: </strong>{{ number_of_pending_documents }}</p>
+    <table>
+        <tr>
+            <th>Client</th>     
+            <th>Total Docs</th>     
+            <th>Pending Docs</th>     
+        </tr>
+        {% for item in summary %}
+            <tr>
+                <td>{{ item.name }}</td>
+                <td>{{ item.total }} </td>
+                <td>{{ item.pending }}</td>
+            </tr>
+        {% endfor %}
+    </table>
+{% endblock %}

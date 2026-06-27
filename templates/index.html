@@ -1,5 +1,9 @@
 {% extends 'base.html' %}
 {% block content %}
+    <form method="GET" class="search-form">
+        <input type="text" name="query" value="{{ query }}">
+        <button type="submit">Search</button>
+    </form>
     <h3>Clients</h3>
     {% if clients|length == 0 %}
         <p>No clients yet. <a href="{{ url_for('add_client') }}">Add one</a>.</p>
